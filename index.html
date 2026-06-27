@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Hero | Master Simulator</title>
+    <meta name="description" content="Simulateur expert de comptabilité et finance d'entreprise (PCG).">
+    <meta name="keywords" content="jeu comptabilite, exercice comptabilite gratuit, apprendre la compta, bilan interactif, fiscalite francaise">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; box-sizing: border-box;">
+
+    <div class="card" style="max-width: 600px; width: 100%; text-align: center; padding: 40px;">
+        <h1 style="color: var(--accent-green); font-size: 32px; margin-bottom: 5px;">💼 Financial Hero: Master Edition</h1>
+        <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 15px; line-height: 1.6;">
+            Choisissez une filière d'entreprise pour lancer un grand exercice complet de 15 étapes (de l'ouverture de l'année jusqu'à la clôture des comptes d'inventaire).
+        </p>
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px; text-align: left;">
+            <button onclick="startCompany('boulangerie')" class="btn-main" style="background: #fff; border: 2px solid var(--border-color); color: var(--text-main); padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; transition: all 0.2s;">
+                <strong style="display: block; font-size: 16px; color: var(--accent-green);">🥖 1. L'Artisan Boulanger</strong>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: normal; display: block; margin-top: 4px;">Focus : Gestion des stocks physiques (Farine), Fiches de paie, Cessions d'actifs immobiliers et provisions pour risques.</span>
+            </button>
+
+            <button onclick="startCompany('saas')" class="btn-main" style="background: #fff; border: 2px solid var(--border-color); color: var(--text-main); padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; transition: all 0.2s;">
+                <strong style="display: block; font-size: 16px; color: #0284c7;">💻 2. L'Éditeur de Logiciels SaaS</strong>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: normal; display: block; margin-top: 4px;">Focus : Régularisations d'abonnements à cheval (Cut-off / PCA), Frais de R&D, Factures internationales en devises ($).</span>
+            </button>
+
+            <button onclick="startCompany('industrie')" class="btn-main" style="background: #fff; border: 2px solid var(--border-color); color: var(--text-main); padding: 15px; border-radius: 8px; cursor: pointer; text-align: left; transition: all 0.2s;">
+                <strong style="display: block; font-size: 16px; color: #b91c1c;">🏭 3. Le Groupe Industriel</strong>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: normal; display: block; margin-top: 4px;">Focus : Double flux de stocks (Matières et Produits finis), Amortissements lourds et initiation à la Consolidation.</span>
+            </button>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
+            <input type="text" id="code-import" placeholder="Coller un code chiffré de sauvegarde..." style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; margin-bottom: 10px;">
+            <button onclick="importSave()" class="btn-secondary" style="width: 100%; padding: 12px; font-weight: bold;">🔄 Forcer l'importation manuelle</button>
+        </div>
+    </div>
+
+    <script>
+        function startCompany(type) {
+            localStorage.setItem('fh_current_company', type);
+            localStorage.removeItem('financial_hero_save');
+            window.location.href = 'game.html';
+        }
+        function importSave() {
+            const code = document.getElementById('code-import').value.trim();
+            if (code) {
+                try {
+                    const decoded = JSON.parse(atob(code));
+                    localStorage.setItem('financial_hero_save', code);
+                    localStorage.setItem('fh_current_company', decoded.companyType || 'boulangerie');
+                    window.location.href = 'game.html';
+                } catch(e) { alert("Code de sauvegarde invalide."); }
+            }
+        }
+    </script>
+</body>
+</html>
