@@ -194,8 +194,23 @@ function renderFinancials() {
     const scenario = pool ? pool[gameState.step] : null;
     if (!scenario) return;
     
+    // NOUVEL ALGORITHME DE VALIDATION : On vérifie les écritures attendues plutôt que l'équilibre instantané du bilan
     const linesRequired = Object.keys(scenario.expectedEntries).length;
-    if (gameState.journal.length === linesRequired && totalActif === totalPassif) {
+    let stepValidated = true;
+    for (let acc in scenario.expectedEntries) {
+        const expected = scenario.expectedEntries[acc];
+        const hasEntry = gameState.journal.some(item => 
+            item.account === acc && 
+            (expected.debit ? item.debit === expected.debit : true) &&
+            (expected.credit ? item.credit === expected.credit : true)
+        );
+        if (!hasEntry) {
+            stepValidated = false;
+            break;
+        }
+    }
+
+    if (gameState.journal.length >= linesRequired && stepValidated) {
         document.getElementById('success-panel').style.display = 'block';
         autoSave();
     } else {
